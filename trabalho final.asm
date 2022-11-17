@@ -8,6 +8,7 @@ str_q2m db "Qtde. de m's: ", 0
 section .bss
 q1: resb 42d
 q3: resb 42d
+q4: resb 42d
 
 section .text
 global CMAIN
@@ -16,6 +17,7 @@ CMAIN:
     call questao_1
     call questao_2
     call questao_3
+    call questao_4
     ret
     
 questao_1:
@@ -82,6 +84,26 @@ questao_3:
     loop while_3_2
 
     PRINT_STRING q3
+    NEWLINE
+    NEWLINE
+    
+    ret
+
+questao_4:
+	mov esi, q1
+	mov edi, q4
+	xor eax, eax
+	mov ecx, 41d
+
+	while_4:
+		lodsb
+		cmp eax, ' '
+		je continue_4
+		stosb
+		continue_4:
+	loop while_4
+
+	PRINT_STRING q4
     NEWLINE
     NEWLINE
     
