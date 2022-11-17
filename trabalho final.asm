@@ -1,12 +1,13 @@
 %include "io.inc"
 
 section .data
-entrada db "Qual e a importancia da escola na democratizacao da sociedade",0
-str_q2a db "Qtde. de a's: ",0
-str_q2m db "Qtde. de m's: ",0
+entrada db "Qual e a importancia da escola na democratizacao da sociedade", 0
+str_q2a db "Qtde. de a's: ", 0
+str_q2m db "Qtde. de m's: ", 0
 
 section .bss
-q1: resb 100d
+q1: resb 42d
+q3: resb 42d
 
 section .text
 global CMAIN
@@ -14,6 +15,7 @@ CMAIN:
     mov ebp, esp; for correct debugging
     call questao_1
     call questao_2
+    call questao_3
     ret
     
 questao_1:
@@ -33,7 +35,7 @@ questao_2:
     
     mov cx, 41d
     mov esi, q1
-    while:
+    while_2:
         lodsb
         cmp eax, 'a'
         jne nea
@@ -45,14 +47,41 @@ questao_2:
         inc bl
         
         nem:
-        dec cx
-        jnz while
+        
+    loop while_2
     
     PRINT_STRING str_q2a
     PRINT_DEC 1, bh
     NEWLINE
     PRINT_STRING str_q2m
     PRINT_DEC 1, bl
+    NEWLINE
+    NEWLINE
+    
+    ret
+
+questao_3:
+    mov esi, q1
+    mov edi, q3
+    mov ecx, 21d
+    xor eax, eax
+    
+    while_3_1:
+        lodsw
+        push ax
+    loop while_3_1
+    
+    mov ecx, 20d
+    pop ax
+    stosb
+    
+    while_3_2:
+        pop ax
+        xchg al, ah
+        stosw 
+    loop while_3_2
+
+    PRINT_STRING q3
     NEWLINE
     NEWLINE
     
