@@ -9,15 +9,45 @@ section .bss
 q1: resb 42d
 q3: resb 42d
 q4: resb 42d
+q5: resb 42d
 
 section .text
 global CMAIN
+
+%macro uppercase 1    
+    cmp %1, ' '
+    je endupper
+    cmp %1, 97d
+    jl endupper
+    
+    sub %1, 20h
+    endupper:
+%endmacro
+
+%macro lowercase 1    
+    cmp %1, ' '
+    je endlow
+    cmp %1, 90d
+    jg endlow
+    
+    add %1, 20h
+    endlow:
+%endmacro
+
+%macro result 1
+    PRINT_STRING %1
+    NEWLINE
+    NEWLINE
+%endmacro
+
 CMAIN:
     mov ebp, esp; for correct debugging
     call questao_1
     call questao_2
     call questao_3
     call questao_4
+    call questao_5
+    
     ret
     
 questao_1:
@@ -26,9 +56,8 @@ questao_1:
     mov edi, q1
     cld
     rep movsb
-    PRINT_STRING q1
-    NEWLINE
-    NEWLINE
+    result q1
+
     ret
     
 questao_2:
@@ -83,28 +112,63 @@ questao_3:
         stosw 
     loop while_3_2
 
-    PRINT_STRING q3
-    NEWLINE
-    NEWLINE
+    result q3
     
     ret
 
 questao_4:
-	mov esi, q1
-	mov edi, q4
-	xor eax, eax
-	mov ecx, 41d
+    mov esi, q1
+    mov edi, q4
+    xor eax, eax
+    mov ecx, 41d
 
-	while_4:
-		lodsb
-		cmp eax, ' '
-		je continue_4
-		stosb
-		continue_4:
-	loop while_4
+    while_4:
+        lodsb
+        cmp eax, ' '
+        je continue_4
+        stosb
+        continue_4:
+    loop while_4
 
-	PRINT_STRING q4
-    NEWLINE
-    NEWLINE
+    result q4
+    
+    ret
+
+questao_5:
+    mov esi, q1
+    mov edi, q5
+    mov ecx, 41d
+    xor eax, eax
+    mov bl, 2
+    mov bh, 3
+    
+    while_5:
+        cmp bh, bl
+        jne nozero_5
+        cmp bh, 0
+        jne nozero_5
+        mov bx, 302h
+        
+        nozero_5:
+        lodsb
+        cmp al, ' '
+        je continue_5
+        
+        cmp bl, 0
+        je minusc_5
+        uppercase al
+        dec bl
+        jmp continue_5
+        
+        minusc_5:
+        lowercase al
+        dec bh
+        
+        continue_5:
+        stosb
+        
+    loop while_5
+    
+    result q5
     
     ret
