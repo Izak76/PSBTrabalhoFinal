@@ -2,14 +2,18 @@
 
 section .data
 entrada db "Qual e a importancia da escola na democratizacao da sociedade", 0
-str_q2a db "Qtde. de a's: ", 0
-str_q2m db "Qtde. de m's: ", 0
+str_q2a db "Quantidade de a's: ", 0
+str_q2m db "Quantidade de m's: ", 0
+str_q6s db " -> ", 0
+str_q6e db ", ", 0
 
 section .bss
 q1: resb 42d
 q3: resb 42d
 q4: resb 42d
 q5: resb 42d
+q6: resb 42d
+q6c: resb 1
 
 section .text
 global CMAIN
@@ -47,6 +51,7 @@ CMAIN:
     call questao_3
     call questao_4
     call questao_5
+    call questao_6
     
     ret
     
@@ -170,5 +175,35 @@ questao_5:
     loop while_5
     
     result q5
+    
+    ret
+
+questao_6:
+    mov esi, q1
+    mov edi, q6
+    mov ecx, 41d
+    xor eax, eax
+    
+    while_6:
+        lodsb
+        cmp al, ' '
+        je continue_6
+        
+        mov [q6c], al
+        PRINT_STRING q6c
+        PRINT_STRING str_q6s
+        sub al, 96
+        
+        stosb
+        PRINT_DEC 1, al
+        cmp ecx, 1
+        je continue_6
+        PRINT_STRING str_q6e
+        continue_6:
+        
+    dec ecx
+    jnz while_6
+    NEWLINE
+    NEWLINE
     
     ret
