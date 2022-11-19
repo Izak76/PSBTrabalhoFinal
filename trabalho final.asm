@@ -1,19 +1,22 @@
 %include "io.inc"
 
 section .data
-entrada db "Qual e a importancia da escola na democratizacao da sociedade", 0
+;entrada db "Qual e a importancia da escola na democratizacao da sociedade", 0
 str_q2a db "Quantidade de a's: ", 0
 str_q2m db "Quantidade de m's: ", 0
 str_q6s db " -> ", 0
 str_q6e db ", ", 0
+str_q7m db "Media: ", 0
 
 section .bss
+entrada: resb 61d
 q1: resb 42d
 q3: resb 42d
 q4: resb 42d
 q5: resb 42d
 q6: resb 42d
 q6c: resb 1
+q7: resb 42d
 
 section .text
 global CMAIN
@@ -45,13 +48,14 @@ global CMAIN
 %endmacro
 
 CMAIN:
-    mov ebp, esp; for correct debugging
+    GET_STRING entrada, 61d
     call questao_1
     call questao_2
     call questao_3
     call questao_4
     call questao_5
     call questao_6
+    call questao_7
     
     ret
     
@@ -207,3 +211,61 @@ questao_6:
     NEWLINE
     
     ret
+
+questao_7:
+    xor bh, bh
+    while_7e:
+        xor ax, ax
+        xor ecx, ecx
+        mov al, [q6]
+        while_7i:
+            mov bl, [q6+ecx]
+            cmp bl, 0
+            je endwhile_7i
+            
+            cmp al, 0
+            jne nozero_7i
+            mov al, bl
+            nozero_7i:
+            
+            cmp al, bl
+            jl endwhile_7i
+            
+            mov al, bl
+            mov edx, q6
+            add edx, ecx
+        endwhile_7i:
+        inc ecx
+        cmp ecx, 36d
+        jl while_7i
+        
+        mov byte [edx], 0
+        push ax
+        
+    inc bh
+    cmp bh, 36d
+    jl while_7e
+
+    xor ax, ax
+    xor bx, bx
+    xor cx, cx
+    ploop_7:
+        pop bx
+        PRINT_DEC 1, bl
+        xor bh, bh
+        add ax, bx
+        cmp cx, 35d
+        je endploop_7
+        PRINT_STRING str_q6e
+    endploop_7:
+    inc cx
+    cmp cx, 36d
+    jl ploop_7
+    
+    NEWLINE
+    mov bl, 36d
+    div bl
+    PRINT_STRING str_q7m
+    PRINT_DEC 1, al
+    NEWLINE
+    ret  
