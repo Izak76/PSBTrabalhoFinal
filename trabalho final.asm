@@ -73,7 +73,7 @@ questao_1:
     mov ecx, 41d        ;Contador para o comando de repetição (a string de interesse tem 41 caracteres)
     mov edi, q1         ;Define o reg. EDI com o endereço da variável q1
     cld                 ;Define direction flag como 0 (percorre a string da esquerda para a direita)
-    rep movsb           ;Repete o movimento de caracteres da entrada para q1 até que ecx seja 0.
+    rep movsb           ;Repete o movimento de caracteres da entrada para q1 até que ECX seja 0.
     result q1           ;Imprime o resultado
 
     ret
@@ -267,9 +267,9 @@ questao_7:
     xor cx, cx
     mov edi, q7                 ;Define EDI como o endereço de q7. Para facilitar o processo, vamos tratar q7 como uma string
     ploop_7:
-        pop ax                  ;Retira da pilha um elemento e move para BX
-        PRINT_DEC 1, al         ;Imprime BL
-        xor ah, ah              ;Limpa BH
+        pop ax                  ;Retira da pilha um elemento e move para AX
+        PRINT_DEC 1, al         ;Imprime AL
+        xor ah, ah              ;Limpa AH
         add bx, ax              ;Soma com BX o valor de AX (BX será o somatório)
         stosb                   ;Move o valor de AL para q7
         cmp cx, 35d             ;Compara se CX é igual a 35
@@ -281,6 +281,7 @@ questao_7:
     jl ploop_7                  ;Se for menor, repete ploop_7 até que CX = 36
     
     NEWLINE
+    mov ax, bx                  ;Move o somatório (em BX) para AX (para fazer a divisão)
     mov dl, 36d                 ;Define DL = 36
     div dl                      ;Divide AX por DL
     PRINT_STRING str_q7m        ;Imprime "Media: "
