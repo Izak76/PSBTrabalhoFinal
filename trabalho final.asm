@@ -1,4 +1,10 @@
+;Projeto da disciplina MATA49 - Programação de Software Básico
+;Aluno: Izak Alves Gama
+;Professor: Babacar Mane
+
 %include "io.inc"
+
+;Qual e a importancia da escola na democratizacao da sociedade
 
 section .data ;Strings para a impressão de textos
 str_q2a db "Quantidade de a's: ", 0
@@ -263,32 +269,39 @@ questao_7:
 
     ;Limpeza dos registradores
     xor ax, ax
-    xor bx, bx
     xor cx, cx
     mov edi, q7                 ;Define EDI como o endereço de q7. Para facilitar o processo, vamos tratar q7 como uma string
-    ploop_7:
+    ploop_7:                    ;Loop para mover os valores ordenados da pilha para o vetor q7
         pop ax                  ;Retira da pilha um elemento e move para AX
-        PRINT_DEC 1, al         ;Imprime AL
-        xor ah, ah              ;Limpa AH
-        add bx, ax              ;Soma com BX o valor de AX (BX será o somatório)
         stosb                   ;Move o valor de AL para q7
-        cmp cx, 35d             ;Compara se CX é igual a 35
-        je endploop_7           ;Se sim, pula a próxima instrução (não imprime ", ", pois já é o último número)
-        PRINT_STRING str_q6e    ;Imprime ", "
     endploop_7:
     inc cx                      ;Incrementa CX
     cmp cx, 36d                 ;Compara CX com 36
     jl ploop_7                  ;Se for menor, repete ploop_7 até que CX = 36
     
+    ;Limpeza dos registradores
+    xor ecx, ecx
+    xor ax, ax
+    xor bx, bx
+    sloop_7:                    ;Loop para imprimir o vetor e somar os valores para calcular a media
+        mov bl, [q7+ecx]        ;Move para BL o valor do vetor q7 com index ECX
+        PRINT_DEC 1, bl         ;Imprime-o
+        add ax, bx              ;Soma AX com BX. AX é o somatório da média (BX foi inicialmente zerado, então BX = BL)
+        cmp ecx, 35d            ;Compara se CX é igual a 35
+        je endsloop_7           ;Se sim, pula a próxima instrução (não imprime ", ", pois já é o último número)
+        PRINT_STRING str_q6e    ;Imprime ", "
+    endsloop_7:
+    inc ecx                     ;Incrementa ECX
+    cmp ecx, 36d                ;Compara ECX com 36
+    jl sloop_7                  ;Se for menor, repete sloop_7 até que CX = 36
+    
     NEWLINE
-    mov ax, bx                  ;Move o somatório (em BX) para AX (para fazer a divisão)
-    mov dl, 36d                 ;Define DL = 36
+    mov dl, 36d                 ;Define DL = 36 (quantidade de itens em q7)
     div dl                      ;Divide AX por DL
     PRINT_STRING str_q7m        ;Imprime "Media: "
     PRINT_DEC 1, al             ;Imprime o quociente da divisão (a parte inteira da média)
     NEWLINE
     ret  
-
 
 
 ;<APÊNDICE 1>
